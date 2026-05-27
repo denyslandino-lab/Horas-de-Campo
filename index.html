@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pregação 2026">
+<meta name="theme-color" content="#185FA5">
+<title>Pregação 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;padding-bottom:74px}
+.topbar{background:#185FA5;padding:14px 14px 10px;position:sticky;top:0;z-index:100}
+.topbar-row{display:flex;align-items:center;justify-content:space-between}
+.app-title{font-size:16px;font-weight:600;color:#E6F1FB}
+.mnbtn{background:#0C447C;border:none;border-radius:8px;width:34px;height:34px;font-size:20px;color:#B5D4F4;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.month-lbl{font-size:14px;font-weight:500;color:#fff;min-width:100px;text-align:center}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 10px 0;background:#f0f4f8}
+.metric{background:#fff;border-radius:10px;padding:10px 12px}
+.metric-lbl{font-size:10px;color:#378ADD;font-weight:500;margin-bottom:2px}
+.metric-val{font-size:19px;font-weight:700;color:#0C447C;line-height:1.15}
+.metric-sub{font-size:10px;color:#85B7EB;margin-top:2px}
+.prog-wrap{background:#E6F1FB;border-radius:3px;height:4px;margin-top:5px}
+.prog-bar{background:#185FA5;border-radius:3px;height:4px;transition:width .4s}
+.sec{font-size:11px;font-weight:700;color:#185FA5;padding:10px 10px 5px;background:#f0f4f8;text-transform:uppercase;letter-spacing:.05em}
+.day-list{padding:0 10px 10px;display:flex;flex-direction:column;gap:7px;background:#f0f4f8}
+.dc{background:#fff;border-radius:10px;padding:10px 12px}
+.dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.di{display:flex;align-items:baseline;gap:5px}
+.dn{font-size:16px;font-weight:700;color:#0C447C}
+.dw{font-size:11px;color:#85B7EB}
+.dn.s{color:#E24B4A}.dw.s{color:#E24B4A}
+.dn.b{color:#185FA5}.dw.b{color:#185FA5}
+.dt{font-size:12px;font-weight:600;color:#185FA5}
+.dt.z{color:#B5D4F4}
+.hbtns{display:flex;gap:5px}
+.hb{flex:1;padding:9px 2px;border-radius:18px;border:1.5px solid #B5D4F4;font-size:12px;font-weight:500;color:#378ADD;background:#fff;cursor:pointer;text-align:center}
+.hb.on{background:#185FA5;border-color:#185FA5;color:#fff}
+.footer{position:fixed;bottom:0;left:0;right:0;background:#185FA5;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.tl{font-size:12px;color:#B5D4F4}
+.tv{font-size:19px;font-weight:700;color:#fff}
+.chart-wrap{padding:0 10px;background:#f0f4f8}
+.cc{background:#fff;border-radius:10px;padding:10px 12px}
+.ct{font-size:11px;color:#378ADD;font-weight:500;margin-bottom:8px}
+.br{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.bl{font-size:11px;width:18px;text-align:right;font-weight:600;flex-shrink:0}
+.bt{flex:1;height:9px;background:#E6F1FB;border-radius:5px;overflow:hidden}
+.bf{height:100%;border-radius:5px;background:#185FA5}
+.bv{font-size:11px;color:#0C447C;width:40px;font-weight:500;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-row">
+    <span class="app-title">📖 Pregação 2026</span>
+    <div style="display:flex;align-items:center">
+      <button class="mnbtn" id="p">‹</button>
+      <span class="month-lbl" id="ml"></span>
+      <button class="mnbtn" id="n">›</button>
+    </div>
+  </div>
+</div>
+<div class="summary" id="sg"></div>
+<div id="cs" style="display:none">
+  <div class="sec">Distribuição</div>
+  <div class="chart-wrap"><div class="cc"><div class="ct">Horas por dia</div><div id="bw"></div></div></div>
+</div>
+<div class="sec">Registrar dias</div>
+<div class="day-list" id="dl"></div>
+<div class="footer"><span class="tl">Total do mês</span><span class="tv" id="gt">0h 00min</span></div>
+<script>
+const MN=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const WD=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const OP=[{l:'30m',v:.5},{l:'1h',v:1},{l:'2h',v:2},{l:'3h',v:3},{l:'4h',v:4}];
+let mo=new Date().getMonth(),yr=2026,dt={};
+function sv(){try{localStorage.setItem('p26',JSON.stringify(dt));}catch(e){}}
+function ld(){try{const x=localStorage.getItem('p26');if(x)dt=JSON.parse(x);}catch(e){}}
+const k=(y,m,d)=>`${y}${m}${d}`;
+const dys=(y,m)=>Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>i+1);
+const tm=(y,m)=>dys(y,m).reduce((s,d)=>s+Math.round((dt[k(y,m,d)]||0)*60),0);
+const ad=(y,m)=>dys(y,m).filter(d=>(dt[k(y,m,d)]||0)>0).length;
+const ft=x=>`${Math.floor(x/60)}h ${String(x%60).padStart(2,'0')}min`;
+function re(){
+  document.getElementById('ml').textContent=MN[mo];
+  const dd=dys(yr,mo),tot=tm(yr,mo),act=ad(yr,mo);
+  const pct=Math.min(100,Math.round(tot/600)),avg=act?ft(Math.round(tot/act)):'—';
+  document.getElementById('sg').innerHTML=`
+    <div class="metric"><div class="metric-lbl">Total de horas</div><div class="metric-val">${ft(tot)}</div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div><div class="metric-sub">${pct}% da meta (10h)</div></div>
+    <div class="metric"><div class="metric-lbl">Dias ativos</div><div class="metric-val">${act}</div><div class="metric-sub">de ${dd.length} dias</div></div>
+    <div class="metric"><div class="metric-lbl">Média/dia</div><div class="metric-val" style="font-size:14px;padding-top:4px">${avg}</div><div class="metric-sub">com pregação</div></div>
+    <div class="metric"><div class="metric-lbl">Anual</div><div class="metric-val" style="font-size:14px;padding-top:4px">${ft(MN.reduce((s,_,i)=>s+tm(yr,i),0))}</div><div class="metric-sub">acumulado 2026</div></div>`;
+  const li=document.getElementById('dl');li.innerHTML='';
+  dd.forEach(d=>{
+    const dw=new Date(yr,mo,d).getDay(),kk=k(yr,mo,d),vl=dt[kk]||0,mn=Math.round(vl*60);
+    const sc=dw===0?'s':dw===6?'b':'';
+    const c=document.createElement('div');c.className='dc';
+    c.innerHTML=`<div class="dh"><div class="di"><span class="dn ${sc}">${d}</span><span class="dw ${sc}">${WD[dw]}, ${MN[mo].slice(0,3)}</span></div><span class="dt ${mn?'':'z'}">${mn?ft(mn):'—'}</span></div><div class="hbtns" id="h${d}"></div>`;
+    li.appendChild(c);
+    OP.forEach(o=>{
+      const b=document.createElement('button');b.className='hb'+(vl===o.v?' on':'');b.textContent=o.l;
+      b.onclick=()=>{dt[kk]=dt[kk]===o.v?0:o.v;if(!dt[kk])delete dt[kk];sv();re();};
+      c.querySelector(`#h${d}`).appendChild(b);
+    });
+  });
+  document.getElementById('gt').textContent=ft(tot);
+  const aa=dd.filter(d=>(dt[k(yr,mo,d)]||0)>0),cs=document.getElementById('cs');
+  if(aa.length){cs.style.display='';document.getElementById('bw').innerHTML=aa.map(d=>{
+    const x=Math.round((dt[k(yr,mo,d)]||0)*60),p=Math.round(x/240*100),lc=new Date(yr,mo,d).getDay()===0?'#E24B4A':'#378ADD';
+    return `<div class="br"><span class="bl" style="color:${lc}">${d}</span><div class="bt"><div class="bf" style="width:${p}%"></div></div><span class="bv">${ft(x)}</span></div>`;
+  }).join('');}else cs.style.display='none';
+}
+document.getElementById('p').onclick=()=>{mo--;if(mo<0){mo=11;yr--;}re();};
+document.getElementById('n').onclick=()=>{mo++;if(mo>11){mo=0;yr++;}re();};
+ld();re();
+</script>
+</body>
+</html>
