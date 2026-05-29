@@ -63,35 +63,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dn.b{color:#185FA5}.dw.b{color:#185FA5}
 .dt{font-size:12px;font-weight:600;color:#185FA5}
 .dt.z{color:#B5D4F4}
-
-/* PICKER */
-.picker-wrap{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:10px}
-.picker-col{display:flex;flex-direction:column;align-items:center;gap:2px}
-.picker-lbl{font-size:9px;color:#85B7EB;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
-.picker-drum{width:64px;height:108px;overflow:hidden;position:relative;border-radius:12px;background:#f0f4f8;border:1.5px solid #B5D4F4;cursor:grab;user-select:none;-webkit-user-select:none}
-.picker-drum.active{border-color:#185FA5;background:#E6F1FB}
-.picker-list{position:absolute;left:0;right:0;top:0;transition:transform .15s ease-out}
-.picker-item{height:36px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:#B5D4F4;transition:color .1s,font-size .1s}
-.picker-item.sel{color:#0C447C;font-size:20px}
-.picker-item.adj{color:#378ADD;font-size:15px}
-.picker-overlay{position:absolute;left:0;right:0;pointer-events:none}
-.picker-overlay.top{top:0;height:36px;background:linear-gradient(to bottom,#f0f4f8,transparent)}
-.picker-overlay.bot{bottom:0;height:36px;background:linear-gradient(to top,#f0f4f8,transparent)}
-.picker-drum.active .picker-overlay.top{background:linear-gradient(to bottom,#E6F1FB,transparent)}
-.picker-drum.active .picker-overlay.bot{background:linear-gradient(to top,#E6F1FB,transparent)}
-.picker-sel-line{position:absolute;left:6px;right:6px;height:36px;top:36px;border-top:1.5px solid #185FA5;border-bottom:1.5px solid #185FA5;pointer-events:none;border-radius:4px;background:rgba(24,95,165,0.06)}
-.picker-sep{font-size:20px;font-weight:700;color:#0C447C;padding:0 2px;margin-top:18px}
-.picker-clear{background:none;border:none;font-size:11px;color:#B5D4F4;cursor:pointer;padding:2px 6px;margin-top:2px}
-.picker-clear.has-val{color:#E24B4A}
-
-/* COUNTERS */
-.counter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.counter-box{background:#f0f4f8;border-radius:8px;padding:6px 4px;text-align:center}
-.counter-lbl{font-size:9px;color:#378ADD;font-weight:600;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
-.counter-row{display:flex;align-items:center;justify-content:center;gap:6px}
-.cbtn{background:#E6F1FB;border:none;border-radius:50%;width:24px;height:24px;font-size:15px;color:#185FA5;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
-.cval{font-size:16px;font-weight:700;color:#0C447C;min-width:18px;text-align:center}
-
+/* COUNTERS GRID */
+.counter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.counter-box{background:#f0f4f8;border-radius:10px;padding:7px 4px;text-align:center}
+.counter-box.blue{background:#E6F1FB}
+.counter-lbl{font-size:9px;color:#378ADD;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.counter-lbl.dark{color:#0C447C}
+.counter-row{display:flex;align-items:center;justify-content:center;gap:8px}
+.cbtn{background:#185FA5;border:none;border-radius:50%;width:30px;height:30px;font-size:20px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;box-shadow:0 2px 6px rgba(24,95,165,0.25)}
+.cbtn:active{background:#0C447C;transform:scale(.93)}
+.cbtn.sm{width:26px;height:26px;font-size:17px;background:#E6F1FB;color:#185FA5;box-shadow:none}
+.cbtn.sm:active{background:#B5D4F4}
+.cval{font-size:20px;font-weight:800;color:#0C447C;min-width:20px;text-align:center}
+.cval.h{font-size:18px;min-width:52px}
 .footer{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(90deg,#0A1628,#0C447C);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(55,138,221,0.3)}
 .ftl{font-size:10px;color:#85B7EB;margin-bottom:1px;letter-spacing:.03em}
 .ftv{font-size:14px;font-weight:700;color:#fff}
@@ -157,12 +141,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 const MN=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const WD=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-const META=600;
-const HOURS=[0,1,2,3,4,5,6,7,8];
-const MINS=[0,30];
+const META=600, STEP=30, MAX=480;
 let mo=new Date().getMonth(),yr=2026,dt={};
-function sv(){try{localStorage.setItem('p26v2',JSON.stringify(dt));}catch(e){}}
-function ld(){try{const x=localStorage.getItem('p26v2');if(x)dt=JSON.parse(x);}catch(e){}}
+function sv(){try{localStorage.setItem('p26v3',JSON.stringify(dt));}catch(e){}}
+function ld(){try{const x=localStorage.getItem('p26v3');if(x)dt=JSON.parse(x);}catch(e){}}
 const k=(y,m,d)=>`${y}${m}${d}`;
 const kr=(y,m,d)=>`r${y}${m}${d}`;
 const ke=(y,m,d)=>`e${y}${m}${d}`;
@@ -173,146 +155,6 @@ const te=(y,m)=>dys(y,m).reduce((s,d)=>s+(dt[ke(y,m,d)]||0),0);
 const ad=(y,m)=>dys(y,m).filter(d=>(dt[k(y,m,d)]||0)>0).length;
 const ft=x=>`${Math.floor(x/60)}h ${String(x%60).padStart(2,'0')}min`;
 const fsh=x=>{const h=Math.floor(x/60),m=x%60;return m?`${h}h30`:`${h}h`;};
-
-// ---- PICKER ----
-function makePicker(drum, items, initIdx, onchange){
-  const ITEM_H=36, VISIBLE=3, PAD=ITEM_H;
-  let idx=initIdx, startY=0, startOff=0, curOff=0, dragging=false;
-  const list=drum.querySelector('.picker-list');
-
-  function render(animated){
-    list.style.transition=animated?'transform .18s ease-out':'none';
-    list.style.transform=`translateY(${PAD - idx*ITEM_H}px)`;
-    list.querySelectorAll('.picker-item').forEach((el,i)=>{
-      el.className='picker-item'+(i===idx?' sel':Math.abs(i-idx)===1?' adj':'');
-    });
-  }
-
-  function clamp(i){return Math.max(0,Math.min(items.length-1,i));}
-
-  drum.addEventListener('touchstart',e=>{
-    dragging=true;startY=e.touches[0].clientY;
-    startOff=PAD-idx*ITEM_H;
-    list.style.transition='none';
-    drum.classList.add('active');
-  },{passive:true});
-
-  drum.addEventListener('touchmove',e=>{
-    if(!dragging)return;
-    const dy=e.touches[0].clientY-startY;
-    curOff=startOff+dy;
-    list.style.transform=`translateY(${curOff}px)`;
-    const newIdx=clamp(Math.round((PAD-curOff)/ITEM_H));
-    if(newIdx!==idx){
-      idx=newIdx;
-      list.querySelectorAll('.picker-item').forEach((el,i)=>{
-        el.className='picker-item'+(i===idx?' sel':Math.abs(i-idx)===1?' adj':'');
-      });
-    }
-  },{passive:true});
-
-  drum.addEventListener('touchend',()=>{
-    dragging=false;
-    drum.classList.remove('active');
-    render(true);
-    onchange(idx);
-  });
-
-  render(false);
-  return {getIdx:()=>idx, setIdx:(i,anim=true)=>{idx=clamp(i);render(anim);} };
-}
-
-function createDayCard(d){
-  const dw=new Date(yr,mo,d).getDay();
-  const kk=k(yr,mo,d),kkr=kr(yr,mo,d),kke=ke(yr,mo,d);
-  const vl=dt[kk]||0,rv=dt[kkr]||0,ev=dt[kke]||0;
-  const sc=dw===0?'s':dw===6?'b':'';
-  const initH=Math.floor(vl/60), initM=vl%60===30?1:0;
-
-  const card=document.createElement('div');
-  card.className='dc';
-  card.id=`dc${d}`;
-  card.innerHTML=`
-    <div class="dh">
-      <div class="di"><span class="dn ${sc}">${d}</span><span class="dw ${sc}">${WD[dw]}, ${MN[mo].slice(0,3)}</span></div>
-      <span class="dt ${vl?'':'z'}" id="dtotal${d}">${vl?ft(vl):'—'}</span>
-    </div>
-    <div class="picker-wrap">
-      <div class="picker-col">
-        <div class="picker-lbl">horas</div>
-        <div class="picker-drum" id="ph${d}">
-          <div class="picker-sel-line"></div>
-          <div class="picker-list">${HOURS.map(h=>`<div class="picker-item">${h}</div>`).join('')}</div>
-          <div class="picker-overlay top"></div>
-          <div class="picker-overlay bot"></div>
-        </div>
-      </div>
-      <div class="picker-sep">:</div>
-      <div class="picker-col">
-        <div class="picker-lbl">min</div>
-        <div class="picker-drum" id="pm${d}">
-          <div class="picker-sel-line"></div>
-          <div class="picker-list">${MINS.map(m=>`<div class="picker-item">${String(m).padStart(2,'0')}</div>`).join('')}</div>
-          <div class="picker-overlay top"></div>
-          <div class="picker-overlay bot"></div>
-        </div>
-      </div>
-      <div class="picker-col" style="justify-content:flex-end">
-        <div class="picker-lbl">&nbsp;</div>
-        <button class="picker-clear ${vl?'has-val':''}" id="pclr${d}">✕ limpar</button>
-      </div>
-    </div>
-    <div class="counter-grid">
-      <div class="counter-box">
-        <div class="counter-lbl">Revisitas</div>
-        <div class="counter-row"><button class="cbtn" id="rm${d}">−</button><span class="cval" id="rv${d}">${rv}</span><button class="cbtn" id="rp${d}">+</button></div>
-      </div>
-      <div class="counter-box">
-        <div class="counter-lbl">Est. Bíblico</div>
-        <div class="counter-row"><button class="cbtn" id="em${d}">−</button><span class="cval" id="ev${d}">${ev}</span><button class="cbtn" id="ep${d}">+</button></div>
-      </div>
-      <div class="counter-box" style="background:#E6F1FB">
-        <div class="counter-lbl" style="color:#0C447C">Total dia</div>
-        <div style="font-size:12px;font-weight:700;color:#185FA5;margin-top:6px" id="tdtotal${d}">${vl?ft(vl):'—'}</div>
-      </div>
-    </div>`;
-
-  const ph=makePicker(card.querySelector(`#ph${d}`), HOURS, initH, hi=>{
-    const mi=pm.getIdx();
-    const total=HOURS[hi]*60+MINS[mi];
-    dt[kk]=total>0?total:0;
-    if(!dt[kk])delete dt[kk];
-    sv(); updateCard(d);
-  });
-  const pm=makePicker(card.querySelector(`#pm${d}`), MINS, initM, mi=>{
-    const hi=ph.getIdx();
-    const total=HOURS[hi]*60+MINS[mi];
-    dt[kk]=total>0?total:0;
-    if(!dt[kk])delete dt[kk];
-    sv(); updateCard(d);
-  });
-
-  card.querySelector(`#pclr${d}`).onclick=()=>{
-    delete dt[kk]; ph.setIdx(0); pm.setIdx(0); sv(); updateCard(d); re();
-  };
-  card.querySelector(`#rp${d}`).onclick=()=>{dt[kkr]=(dt[kkr]||0)+1;sv();re();};
-  card.querySelector(`#rm${d}`).onclick=()=>{if((dt[kkr]||0)>0){dt[kkr]--;if(!dt[kkr])delete dt[kkr];sv();re();}};
-  card.querySelector(`#ep${d}`).onclick=()=>{dt[kke]=(dt[kke]||0)+1;sv();re();};
-  card.querySelector(`#em${d}`).onclick=()=>{if((dt[kke]||0)>0){dt[kke]--;if(!dt[kke])delete dt[kke];sv();re();}};
-
-  return card;
-}
-
-function updateCard(d){
-  const vl=dt[k(yr,mo,d)]||0;
-  const el=document.getElementById(`dtotal${d}`);
-  const el2=document.getElementById(`tdtotal${d}`);
-  const clr=document.getElementById(`pclr${d}`);
-  if(el){el.textContent=vl?ft(vl):'—';el.className='dt'+(vl?'':' z');}
-  if(el2){el2.textContent=vl?ft(vl):'—';}
-  if(clr){clr.className='picker-clear'+(vl?' has-val':'');}
-  re();
-}
 
 function re(){
   document.getElementById('ml').textContent=MN[mo];
@@ -342,7 +184,7 @@ function re(){
   if(aa.length){
     cs.style.display='';
     document.getElementById('bw').innerHTML=aa.map(d=>{
-      const x=dt[k(yr,mo,d)]||0,p=Math.round(x/480*100);
+      const x=dt[k(yr,mo,d)]||0,p=Math.round(x/MAX*100);
       const lc=new Date(yr,mo,d).getDay()===0?'#E24B4A':'#378ADD';
       return `<div class="br"><span class="bl" style="color:${lc}">${d}</span><div class="bt"><div class="bf" style="width:${p}%"></div></div><span class="bv">${ft(x)}</span></div>`;
     }).join('');
@@ -352,7 +194,66 @@ function re(){
 function buildDays(){
   const li=document.getElementById('dl');
   li.innerHTML='';
-  dys(yr,mo).forEach(d=>li.appendChild(createDayCard(d)));
+  dys(yr,mo).forEach(d=>{
+    const dw=new Date(yr,mo,d).getDay();
+    const kk=k(yr,mo,d),kkr=kr(yr,mo,d),kke=ke(yr,mo,d);
+    const vl=dt[kk]||0,rv=dt[kkr]||0,ev=dt[kke]||0;
+    const sc=dw===0?'s':dw===6?'b':'';
+    const card=document.createElement('div');
+    card.className='dc';
+    card.innerHTML=`
+      <div class="dh">
+        <div class="di"><span class="dn ${sc}">${d}</span><span class="dw ${sc}">${WD[dw]}, ${MN[mo].slice(0,3)}</span></div>
+        <span class="dt ${vl?'':'z'}" id="dtot${d}">${vl?ft(vl):'—'}</span>
+      </div>
+      <div class="counter-grid">
+        <div class="counter-box blue">
+          <div class="counter-lbl dark">Horas</div>
+          <div class="counter-row">
+            <button class="cbtn" id="hm${d}">−</button>
+            <span class="cval h" id="hv${d}">${vl?ft(vl):'0h'}</span>
+            <button class="cbtn" id="hp${d}">+</button>
+          </div>
+        </div>
+        <div class="counter-box">
+          <div class="counter-lbl">Revisitas</div>
+          <div class="counter-row">
+            <button class="cbtn sm" id="rm${d}">−</button>
+            <span class="cval" id="rv${d}">${rv}</span>
+            <button class="cbtn sm" id="rp${d}">+</button>
+          </div>
+        </div>
+        <div class="counter-box">
+          <div class="counter-lbl">Est. Bíblico</div>
+          <div class="counter-row">
+            <button class="cbtn sm" id="em${d}">−</button>
+            <span class="cval" id="ev${d}">${ev}</span>
+            <button class="cbtn sm" id="ep${d}">+</button>
+          </div>
+        </div>
+      </div>`;
+    li.appendChild(card);
+
+    function updH(){
+      const v=dt[kk]||0;
+      card.querySelector(`#hv${d}`).textContent=v?ft(v):'0h';
+      const el=card.querySelector(`#dtot${d}`);
+      el.textContent=v?ft(v):'—'; el.className='dt'+(v?'':' z');
+      re();
+    }
+    function updC(){
+      card.querySelector(`#rv${d}`).textContent=dt[kkr]||0;
+      card.querySelector(`#ev${d}`).textContent=dt[kke]||0;
+      re();
+    }
+
+    card.querySelector(`#hp${d}`).onclick=()=>{const v=dt[kk]||0;if(v<MAX){dt[kk]=v+STEP;sv();updH();}};
+    card.querySelector(`#hm${d}`).onclick=()=>{const v=dt[kk]||0;if(v>0){dt[kk]=v-STEP;if(!dt[kk])delete dt[kk];sv();updH();}};
+    card.querySelector(`#rp${d}`).onclick=()=>{dt[kkr]=(dt[kkr]||0)+1;sv();updC();};
+    card.querySelector(`#rm${d}`).onclick=()=>{if((dt[kkr]||0)>0){dt[kkr]--;if(!dt[kkr])delete dt[kkr];sv();updC();}};
+    card.querySelector(`#ep${d}`).onclick=()=>{dt[kke]=(dt[kke]||0)+1;sv();updC();};
+    card.querySelector(`#em${d}`).onclick=()=>{if((dt[kke]||0)>0){dt[kke]--;if(!dt[kke])delete dt[kke];sv();updC();}};
+  });
 }
 
 document.getElementById('p').onclick=()=>{mo--;if(mo<0){mo=11;yr--;}re();buildDays();};
